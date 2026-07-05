@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Pengaturan Undangan Digital</title>
+<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Assistant', sans-serif;
+  background: linear-gradient(135deg, #0A878E 0%, #094f43 100%);
+  min-height: 100vh;
+  color: #fff;
+  padding: 20px;
+}
+/* ... STYLING SAMA SEPERTI SEBELUMNYA ... */
+.admin-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.98);
+  color: #222;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.admin-header {
+  text-align: center;
+  border-bottom: 3px solid #0A878E;
+  padding-bottom: 20px;
+  margin-bottom: 25px;
+}
+.admin-header h1 {
+  font-family: 'Lora', serif;
+  color: #094f43;
+  font-size: 28px;
+}
+.admin-header p { color: #666; font-size: 14px; margin-top: 5px; }
+.tab-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+.tab-btn {
+  padding: 10px 18px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.3s;
+  font-size: 13px;
+}
+.tab-btn.active {
+  background: #0A878E;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(10,135,142,0.4);
+}
+.tab-btn:hover:not(.active) { background: #e0e0e0; }
+.tab-content { display: none; animation: fadeIn 0.4s; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);} }
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #094f43;
+  font-size: 14px;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border 0.3s;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0A878E;
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-group small { color: #888; font-size: 12px; margin-top: 4px; display: block; }
+.btn-primary {
+  background: #0A878E;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+  margin-right: 8px;
+}
+.btn-primary:hover { background: #094f43; transform: translateY(-2px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-danger {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-secondary {
+  background: #95a5a6;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn-add {
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+.item-card {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.item-card .delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+}
+.section-title {
+  font-family: 'Lora', serif;
+  color: #094f43;
+  font-size: 20px;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px dashed #0A878E;
+}
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+.alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+.alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+.actions-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #0A878E;
+  text-decoration: none;
+  font-weight: 600;
+}
+.back-link:hover { text-decoration: underline; }
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  margin-top: 8px;
+}
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+.loading-overlay.show { display: flex; }
+.loading-box {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 15px;
+  text-align: center;
+  color: #333;
+}
+.spinner {
+  width: 40px; height: 40px;
+  border: 4px solid #ddd;
+  border-top-color: #0A878E;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 15px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 600px) {
+  .row-2 { grid-template-columns: 1fr; }
+  .admin-container { padding: 20px 15px; }
+  .tab-btn { padding: 8px 12px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p id="loading-text">Menyimpan data...</p>
+  </div>
+</div>
+
+<div class="admin-container" id="admin-container" style="display:none">
+  <a href="index.html" class="back-link"><i class="fa fa-arrow-left"></i> Kembali ke Undangan</a>
+
+  <div class="admin-header">
+    <h1><i class="fa fa-cog"></i> Pengaturan Undangan</h1>
+    <p>Edit semua konten undangan digital Anda di sini</p>
+    <p style="font-size:11px;color:#999;margin-top:5px;">
+      <i class="fa fa-database"></i> Backend: Google Sheets
+      <span id="connection-status" style="margin-left:10px;"></span>
+    </p>
+  </div>
+
+  <div id="alert-box"></div>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('tab-umum',this)"><i class="fa fa-home"></i> Umum</button>
+    <button class="tab-btn" onclick="showTab('tab-acara',this)"><i class="fa fa-calendar"></i> Acara</button>
+    <button class="tab-btn" onclick="showTab('tab-ucapan',this)"><i class="fa fa-comment"></i> Ucapan</button>
+    <button class="tab-btn" onclick="showTab('tab-gallery',this)"><i class="fa fa-image"></i> Gallery</button>
+    <button class="tab-btn" onclick="showTab('tab-susunan',this)"><i class="fa fa-list"></i> Susunan</button>
+    <button class="tab-btn" onclick="showTab('tab-maps',this)"><i class="fa fa-map"></i> Maps</button>
+    <button class="tab-btn" onclick="showTab('tab-musik',this)"><i class="fa fa-music"></i> Musik</button>
+    <button class="tab-btn" onclick="showTab('tab-advanced',this)"><i class="fa fa-sliders"></i> Advanced</button>
+  </div>
+
+  <!-- TAB UMUM -->
+  <div id="tab-umum" class="tab-content active">
+    <h3 class="section-title">Informasi Umum</h3>
+    <div class="form-group">
+      <label>Nama Acara</label>
+      <input type="text" id="inp-nama-acara" placeholder="Contoh: Haflah At Tasyakur...">
+    </div>
+    <div class="form-group">
+      <label>Subtitle Cover</label>
+      <input type="text" id="inp-subtitle" placeholder="We Invite You To">
+    </div>
+    <div class="form-group">
+      <label>Nama Tamu (Default)</label>
+      <input type="text" id="inp-nama-tamu" placeholder="Bapak/Ibu/Saudara/i">
+    </div>
+    <div class="form-group">
+      <label>Deskripsi Cover</label>
+      <textarea id="inp-desc-cover" placeholder="Tanpa Mengurangi Rasa Hormat..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Foto Sampul (URL)</label>
+      <input type="text" id="inp-foto-sampul" placeholder="https://...">
+      <img id="preview-foto-sampul" class="image-preview" style="display:none">
+    </div>
+    <div class="form-group">
+      <label>Foto Akhir (URL)</label>
+      <input type="text" id="inp-foto-akhir" placeholder="https://...">
+      <img id="preview-foto-akhir" class="image-preview" style="display:none">
+    </div>
+    <div class="form-group">
+      <label>Kata Penutup</label>
+      <textarea id="inp-akhir-kata" placeholder="Merupakan Suatu Kebahagiaan..."></textarea>
+    </div>
+  </div>
+
+  <!-- TAB ACARA -->
+  <div id="tab-acara" class="tab-content">
+    <h3 class="section-title">Detail Acara</h3>
+    <div class="form-group">
+      <label>Ucapan Pembuka (Bisa HTML)</label>
+      <textarea id="inp-ucapan-pembuka" rows="5"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Doa / Teks Arab</label>
+      <textarea id="inp-doa"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Deskripsi Acara</label>
+      <textarea id="inp-deskripsi-acara" rows="4"></textarea>
+    </div>
+    <div class="row-2">
+      <div class="form-group">
+        <label>Tanggal Acara</label>
+        <input type="date" id="inp-tanggal-acara">
+      </div>
+      <div class="form-group">
+        <label>Waktu Acara</label>
+        <input type="text" id="inp-waktu-acara" placeholder="Pukul 18:00 WIB Sampai Selesai">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Hari</label>
+      <input type="text" id="inp-hari-acara" placeholder="Senin, 08 Mei 2023">
+    </div>
+    <div class="form-group">
+      <label>Lokasi Acara</label>
+      <textarea id="inp-lokasi-acara"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Pembicara</label>
+      <input type="text" id="inp-pembicara">
+    </div>
+    <div class="form-group">
+      <label>Ucapan Penutup</label>
+      <textarea id="inp-ucapan-penutup" rows="3"></textarea>
+    </div>
+  </div>
+
+  <!-- TAB UCAPAN -->
+  <div id="tab-ucapan" class="tab-content">
+    <h3 class="section-title">Pengaturan Ucapan</h3>
+    <div class="alert alert-info">
+      <i class="fa fa-info-circle"></i> Data ucapan tamu tersimpan di Google Sheets. Perubahan langsung tersinkronisasi.
+    </div>
+    <div id="list-ucapan-admin"></div>
+    <button class="btn-danger" onclick="resetUcapan()"><i class="fa fa-trash"></i> Reset Semua Ucapan</button>
+  </div>
+
+  <!-- TAB GALLERY -->
+  <div id="tab-gallery" class="tab-content">
+    <h3 class="section-title">Gallery Foto</h3>
+    <button class="btn-add" onclick="addGalleryItem()"><i class="fa fa-plus"></i> Tambah Foto</button>
+    <div id="list-gallery-admin"></div>
+  </div>
+
+  <!-- TAB SUSUNAN -->
+  <div id="tab-susunan" class="tab-content">
+    <h3 class="section-title">Susunan Acara (Timeline)</h3>
+    <button class="btn-add" onclick="addTimelineItem()"><i class="fa fa-plus"></i> Tambah Item</button>
+    <div id="list-timeline-admin"></div>
+  </div>
+
+  <!-- TAB MAPS -->
+  <div id="tab-maps" class="tab-content">
+    <h3 class="section-title">Pengaturan Maps</h3>
+    <div class="form-group">
+      <label>Link Google Maps (Share Link)</label>
+      <input type="text" id="inp-link-maps" placeholder="https://goo.gl/maps/...">
+    </div>
+    <div class="form-group">
+      <label>Embed Maps (iframe src)</label>
+      <textarea id="inp-embed-maps" rows="3"></textarea>
+    </div>
+  </div>
+
+  <!-- TAB MUSIK -->
+  <div id="tab-musik" class="tab-content">
+    <h3 class="section-title">Musik Background</h3>
+    <div class="form-group">
+      <label>URL File Musik (MP3)</label>
+      <input type="text" id="inp-musik-url" placeholder="https://...musik.mp3">
+    </div>
+    <div class="form-group">
+      <label>URL Musik Alternatif</label>
+      <input type="text" id="inp-musik-alt" placeholder="https://soundcloud.com/...">
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="inp-autoplay" checked> Autoplay saat buka undangan</label>
+    </div>
+  </div>
+
+  <!-- TAB ADVANCED -->
+  <div id="tab-advanced" class="tab-content">
+    <h3 class="section-title">Pengaturan Lanjutan</h3>
+    <div class="form-group">
+      <label>Ubah Password Admin</label>
+      <input type="password" id="inp-new-password" placeholder="Kosongkan jika tidak diubah">
+      <small>Password disimpan di Google Sheets</small>
+    </div>
+    <div class="form-group">
+      <label>Watermark / Copyright</label>
+      <input type="text" id="inp-watermark" placeholder="@ysiroo">
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="inp-animasi-ucapan" checked> Aktifkan animasi ucapan floating</label>
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="inp-countdown" checked> Tampilkan countdown</label>
+    </div>
+    <hr style="margin:20px 0;border:1px solid #eee;">
+    <h4 style="color:#094f43;margin-bottom:10px;">Backup & Restore</h4>
+    <button class="btn-primary" onclick="exportData()"><i class="fa fa-download"></i> Export Data (JSON)</button>
+  </div>
+
+  <div class="actions-bar">
+    <button class="btn-primary" id="btn-save-all" onclick="saveAllData()">
+      <i class="fa fa-save"></i> Simpan Semua Perubahan
+    </button>
+    <button class="btn-secondary" onclick="previewChanges()"><i class="fa fa-eye"></i> Preview</button>
+    <button class="btn-secondary" onclick="window.location.href='index.html'"><i class="fa fa-home"></i> Ke Undangan</button>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/api.js"></script>
+<script>
+// ===== AUTH CHECK =====
+(function() {
+  var auth = sessionStorage.getItem('admin_auth');
+  if (auth !== 'authenticated') {
+    window.location.href = 'index.html';
+    return;
+  }
+  document.getElementById('admin-container').style.display = 'block';
+})();
+
+// ===== STATE =====
+var currentData = {};
+var adminKey = sessionStorage.getItem('admin_key') || '';
+
+// ===== LOAD DATA =====
+async function loadAdminData() {
+  showLoading('Memuat data dari Google Sheets...');
+  var apiData = await apiFetchAll();
+  hideLoading();
+
+  if (apiData) {
+    currentData = apiData;
+    updateConnectionStatus(true);
+  } else {
+    // Fallback
+    try {
+      var cached = localStorage.getItem(API_CONFIG.cacheKey);
+      if (cached) currentData = JSON.parse(cached);
+    } catch(e) {}
+    updateConnectionStatus(false);
+  }
+
+  fillForm();
+}
+
+function updateConnectionStatus(connected) {
+  var el = document.getElementById('connection-status');
+  if (el) {
+    el.innerHTML = connected
+      ? '<span style="color:#27ae60;">● Terhubung</span>'
+      : '<span style="color:#e74c3c;">● Offline (cache)</span>';
+  }
+}
+
+// ===== FILL FORM =====
+function fillForm() {
+  var d = currentData;
+  document.getElementById('inp-nama-acara').value = d.nama_acara || '';
+  document.getElementById('inp-subtitle').value = d.subtitle || '';
+  document.getElementById('inp-nama-tamu').value = d.nama_tamu || '';
+  document.getElementById('inp-desc-cover').value = d.desc_cover || '';
+  document.getElementById('inp-foto-sampul').value = d.foto_sampul || '';
+  document.getElementById('inp-foto-akhir').value = d.foto_akhir || '';
+  document.getElementById('inp-akhir-kata').value = d.akhir_kata || '';
+  document.getElementById('inp-ucapan-pembuka').value = d.ucapan_pembuka || '';
+  document.getElementById('inp-doa').value = d.doa || '';
+  document.getElementById('inp-deskripsi-acara').value = d.deskripsi_acara || '';
+  document.getElementById('inp-hari-acara').value = d.hari_acara || '';
+  document.getElementById('inp-tanggal-acara').value = d.tanggal_acara || '';
+  document.getElementById('inp-waktu-acara').value = d.waktu_acara || '';
+  document.getElementById('inp-lokasi-acara').value = d.lokasi_acara || '';
+  document.getElementById('inp-pembicara').value = d.pembicara || '';
+  document.getElementById('inp-ucapan-penutup').value = d.ucapan_penutup || '';
+  document.getElementById('inp-link-maps').value = d.link_maps || '';
+  document.getElementById('inp-embed-maps').value = d.embed_maps || '';
+  document.getElementById('inp-musik-url').value = d.musik_url || '';
+  document.getElementById('inp-musik-alt').value = d.musik_alt || '';
+  document.getElementById('inp-autoplay').checked = d.autoplay !== false;
+  document.getElementById('inp-watermark').value = d.watermark || '@ysiroo';
+  document.getElementById('inp-animasi-ucapan').checked = d.animasi_ucapan !== false;
+  document.getElementById('inp-countdown').checked = d.countdown !== false;
+
+  // Foto previews
+  if (d.foto_sampul) {
+    var p1 = document.getElementById('preview-foto-sampul');
+    p1.src = d.foto_sampul; p1.style.display = 'block';
+  }
+  if (d.foto_akhir) {
+    var p2 = document.getElementById('preview-foto-akhir');
+    p2.src = d.foto_akhir; p2.style.display = 'block';
+  }
+
+  renderGalleryAdmin();
+  renderTimelineAdmin();
+  renderUcapanAdmin();
+}
+
+// ===== TAB NAV =====
+function showTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ===== GALLERY =====
+function renderGalleryAdmin() {
+  var c = document.getElementById('list-gallery-admin');
+  var g = currentData.gallery || [];
+  if (g.length === 0) {
+    c.innerHTML = '<p style="color:#888;text-align:center;padding:20px;">Belum ada foto</p>';
+    return;
+  }
+  c.innerHTML = g.map(function(item, i) {
+    return '<div class="item-card">' +
+      '<button class="delete-btn" onclick="deleteGallery(' + i + ')"><i class="fa fa-times"></i></button>' +
+      '<div class="form-group"><label>URL Foto ' + (i+1) + '</label>' +
+      '<input type="text" value="' + (item.url || '').replace(/"/g, '&quot;') + '" onchange="updateGallery(' + i + ',\'url\',this.value)"></div>' +
+      '<div class="form-group"><label>Caption</label>' +
+      '<input type="text" value="' + (item.caption || '').replace(/"/g, '&quot;') + '" onchange="updateGallery(' + i + ',\'caption\',this.value)"></div>' +
+      (item.url ? '<img src="' + item.url + '" class="image-preview" onerror="this.style.display=\'none\'">' : '') +
+      '</div>';
+  }).join('');
+}
+function addGalleryItem() {
+  if (!currentData.gallery) currentData.gallery = [];
+  currentData.gallery.push({ url: '', caption: '' });
+  renderGalleryAdmin();
+}
+function deleteGallery(i) {
+  if (confirm('Hapus foto ini?')) {
+    currentData.gallery.splice(i, 1);
+    renderGalleryAdmin();
+  }
+}
+function updateGallery(i, key, val) {
+  currentData.gallery[i][key] = val;
+  renderGalleryAdmin();
+}
+
+// ===== TIMELINE =====
+function renderTimelineAdmin() {
+  var c = document.getElementById('list-timeline-admin');
+  var t = currentData.timeline || [];
+  if (t.length === 0) {
+    c.innerHTML = '<p style="color:#888;text-align:center;padding:20px;">Belum ada susunan acara</p>';
+    return;
+  }
+  c.innerHTML = t.map(function(item, i) {
+    return '<div class="item-card">' +
+      '<button class="delete-btn" onclick="deleteTimeline(' + i + ')"><i class="fa fa-times"></i></button>' +
+      '<div class="row-2">' +
+      '<div class="form-group"><label>Waktu</label>' +
+      '<input type="text" value="' + (item.waktu || '').replace(/"/g, '&quot;') + '" onchange="updateTimeline(' + i + ',\'waktu\',this.value)" placeholder="08:00"></div>' +
+      '<div class="form-group"><label>Acara</label>' +
+      '<input type="text" value="' + (item.acara || '').replace(/"/g, '&quot;') + '" onchange="updateTimeline(' + i + ',\'acara\',this.value)" placeholder="Nama acara"></div>' +
+      '</div></div>';
+  }).join('');
+}
+function addTimelineItem() {
+  if (!currentData.timeline) currentData.timeline = [];
+  currentData.timeline.push({ waktu: '', acara: '' });
+  renderTimelineAdmin();
+}
+function deleteTimeline(i) {
+  if (confirm('Hapus item ini?')) {
+    currentData.timeline.splice(i, 1);
+    renderTimelineAdmin();
+  }
+}
+function updateTimeline(i, key, val) {
+  currentData.timeline[i][key] = val;
+}
+
+// ===== UCAPAN =====
+function renderUcapanAdmin() {
+  var c = document.getElementById('list-ucapan-admin');
+  var u = currentData.ucapan || [];
+  if (u.length === 0) {
+    c.innerHTML = '<p style="color:#888;text-align:center;padding:20px;">Belum ada ucapan tamu</p>';
+    return;
+  }
+  c.innerHTML = u.map(function(item, i) {
+    return '<div class="item-card">' +
+      '<button class="delete-btn" onclick="deleteUcapan(' + i + ')"><i class="fa fa-times"></i></button>' +
+      '<strong>' + escapeHtml(item.nama) + '</strong> ' +
+      (item.ket_hadir == '1'
+        ? '<span style="color:green;">✓ Hadir</span>'
+        : '<span style="color:red;">✗ Tidak Hadir</span>') +
+      (item.jumlah ? ' (' + escapeHtml(item.jumlah) + ' orang)' : '') +
+      '<p style="margin-top:5px;font-size:13px;color:#555;">' + escapeHtml(item.ucapan) + '</p>' +
+      '<small style="color:#999;">' + escapeHtml(item.tanggal || '') + '</small>' +
+      '</div>';
+  }).join('');
+}
+
+async function deleteUcapan(i) {
+  if (!confirm('Hapus ucapan ini?')) return;
+  showLoading('Menghapus ucapan...');
+  var ok = await apiDeleteUcapan(i, adminKey);
+  if (ok) {
+    currentData.ucapan.splice(i, 1);
+    renderUcapanAdmin();
+    showAlert('Ucapan dihapus dari server', 'success');
+  } else {
+    showAlert('Gagal menghapus. Cek koneksi internet.', 'error');
+  }
+  hideLoading();
+}
+
+async function resetUcapan() {
+  if (!confirm('Yakin ingin menghapus SEMUA ucapan?')) return;
+  showLoading('Mereset ucapan...');
+  var ok = await apiResetUcapan(adminKey);
+  if (ok) {
+    currentData.ucapan = [];
+    renderUcapanAdmin();
+    showAlert('Semua ucapan telah direset', 'success');
+  } else {
+    showAlert('Gagal mereset. Cek koneksi internet.', 'error');
+  }
+  hideLoading();
+}
+
+// ===== COLLECT FORM DATA =====
+function collectFormData() {
+  currentData.nama_acara = document.getElementById('inp-nama-acara').value;
+  currentData.subtitle = document.getElementById('inp-subtitle').value;
+  currentData.nama_tamu = document.getElementById('inp-nama-tamu').value;
+  currentData.desc_cover = document.getElementById('inp-desc-cover').value;
+  currentData.foto_sampul = document.getElementById('inp-foto-sampul').value;
+  currentData.foto_akhir = document.getElementById('inp-foto-akhir').value;
+  currentData.akhir_kata = document.getElementById('inp-akhir-kata').value;
+  currentData.ucapan_pembuka = document.getElementById('inp-ucapan-pembuka').value;
+  currentData.doa = document.getElementById('inp-doa').value;
+  currentData.deskripsi_acara = document.getElementById('inp-deskripsi-acara').value;
+  currentData.hari_acara = document.getElementById('inp-hari-acara').value;
+  currentData.tanggal_acara = document.getElementById('inp-tanggal-acara').value;
+  currentData.waktu_acara = document.getElementById('inp-waktu-acara').value;
+  currentData.lokasi_acara = document.getElementById('inp-lokasi-acara').value;
+  currentData.pembicara = document.getElementById('inp-pembicara').value;
+  currentData.ucapan_penutup = document.getElementById('inp-ucapan-penutup').value;
+  currentData.link_maps = document.getElementById('inp-link-maps').value;
+  currentData.embed_maps = document.getElementById('inp-embed-maps').value;
+  currentData.musik_url = document.getElementById('inp-musik-url').value;
+  currentData.musik_alt = document.getElementById('inp-musik-alt').value;
+  currentData.autoplay = document.getElementById('inp-autoplay').checked;
+  currentData.watermark = document.getElementById('inp-watermark').value;
+  currentData.animasi_ucapan = document.getElementById('inp-animasi-ucapan').checked;
+  currentData.countdown = document.getElementById('inp-countdown').checked;
+}
+
+// ===== SAVE ALL (KE SHEETS) =====
+async function saveAllData() {
+  var btn = document.getElementById('btn-save-all');
+  btn.disabled = true;
+
+  collectFormData();
+
+  // Handle password change
+  var newPassword = document.getElementById('inp-new-password').value;
+  if (newPassword && newPassword.length >= 4) {
+    // Password perlu di-update via API terpisah (atau bisa ditambahkan di Code.gs)
+    // Untuk sekarang, kita skip perubahan password dari sini
+    // Password hanya bisa diubah langsung di Google Sheets
+    showAlert('Password admin harus diubah langsung di Google Sheets (sheet Konfigurasi)', 'warning');
+    document.getElementById('inp-new-password').value = '';
+  }
+
+  showLoading('Menyimpan ke Google Sheets...');
+
+  var errors = [];
+  var success = true;
+
+  // 1. Save settings
+  var settingsOk = await apiSaveSettings(currentData, adminKey);
+  if (!settingsOk) { errors.push('Settings gagal'); success = false; }
+
+  // 2. Save gallery
+  var galleryOk = await apiSaveGallery(currentData.gallery || [], adminKey);
+  if (!galleryOk) { errors.push('Gallery gagal'); success = false; }
+
+  // 3. Save timeline
+  var timelineOk = await apiSaveTimeline(currentData.timeline || [], adminKey);
+  if (!timelineOk) { errors.push('Timeline gagal'); success = false; }
+
+  hideLoading();
+  btn.disabled = false;
+
+  if (success) {
+    // Update local cache
+    try {
+      localStorage.setItem(API_CONFIG.cacheKey, JSON.stringify(currentData));
+    } catch(e) {}
+    showAlert('✓ Semua data berhasil disimpan ke Google Sheets!', 'success');
+    updateConnectionStatus(true);
+  } else {
+    showAlert('✗ Gagal menyimpan: ' + errors.join(', '), 'error');
+    updateConnectionStatus(false);
+  }
+}
+
+function previewChanges() {
+  // Simpan ke cache dulu untuk preview
+  collectFormData();
+  try {
+    localStorage.setItem(API_CONFIG.cacheKey, JSON.stringify(currentData));
+  } catch(e) {}
+  window.open('index.html', '_blank');
+}
+
+// ===== EXPORT =====
+function exportData() {
+  collectFormData();
+  var str = JSON.stringify(currentData, null, 2);
+  var blob = new Blob([str], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'undangan-data-' + Date.now() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showAlert('✓ Data berhasil di-export', 'success');
+}
+
+// ===== UI HELPERS =====
+function showAlert(msg, type) {
+  var box = document.getElementById('alert-box');
+  var cls = 'alert-' + (type || 'info');
+  box.innerHTML = '<div class="alert ' + cls + '">' + msg + '</div>';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(function() { box.innerHTML = ''; }, 5000);
+}
+
+function showLoading(text) {
+  var el = document.getElementById('loading-overlay');
+  var txt = document.getElementById('loading-text');
+  if (txt) txt.textContent = text || 'Memproses...';
+  if (el) el.classList.add('show');
+}
+
+function hideLoading() {
+  var el = document.getElementById('loading-overlay');
+  if (el) el.classList.remove('show');
+}
+
+// ===== IMAGE PREVIEW =====
+document.getElementById('inp-foto-sampul').addEventListener('input', function() {
+  var p = document.getElementById('preview-foto-sampul');
+  if (this.value) { p.src = this.value; p.style.display = 'block'; }
+  else p.style.display = 'none';
+});
+document.getElementById('inp-foto-akhir').addEventListener('input', function() {
+  var p = document.getElementById('preview-foto-akhir');
+  if (this.value) { p.src = this.value; p.style.display = 'block'; }
+  else p.style.display = 'none';
+});
+
+// ===== INIT =====
+loadAdminData();
+</script>
+</body>
+</html>
