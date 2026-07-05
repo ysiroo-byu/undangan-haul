@@ -657,6 +657,59 @@ async function submitLogin() {
     return;
   }
 
+  const submitBtn = document.querySelector('.btn-submit');
+  const origBtnText = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) { submitBtn.textContent = 'Memverifikasi...'; submitBtn.disabled = true; }
+
+  try {
+    console.log('%c=== DEBUG LOGIN START ===', 'color: red; font-weight: bold');
+    console.log('Mencoba menghubungi:', API_CONFIG.baseUrl);
+
+    // Langsung panggil API mentah tanpa helper, supaya error aslinya KELIHATAN
+    const res = await fetch(API_CONFIG.baseUrl, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'login', password: password })
+    });
+
+    const textResponse = await res.text(); // Baca sebagai teks dulu
+    console.log('Response mentah dari Google:\n', textResponse);
+
+    let json;
+    try {
+      json = JSON.parse(textResponse); // Coba parse ke JSON
+    } catch(e) {
+      throw new Error('Google memblokir! Buka URL API manual di Tab Baru untuk otorisasi.');
+    }
+
+    if (submitBtn) { submitBtn.textContent = origBtnText; submitBtn.disabled = false; }
+
+    if (json.success === true) {
+      if (error) error.textContent = '';
+      sessionStorage.setItem('admin_auth', 'authenticated');
+      sessionStorage.setItem('admin_key', password);
+      closeModalLogin();
+      window.location.href = 'admin.html';
+    } else {
+      // Tampilkan pesan error ASLI dari server
+      let errorMsg = json.error || 'Unknown error';
+      if (errorMsg.includes('Google memblokir')) {
+        errorMsg = 'URL API belum di-otorisasi. Lihat Console (F12) untuk cara memperbaikinya.';
+      }
+      if (error) error.textContent = errorMsg;
+      input.value = '';
+      input.focus();
+    }
+  } catch (err) {
+    console.error('ERROR PADA FETCH:', err);
+    if (submitBtn) { submitBtn.textContent = origBtnText; submitBtn.disabled = false; }
+    if (error) {
+      error.innerHTML = 'Gagal terhubung ke server.<br><small style="color:#666">Buka URL API di tab baru untuk izinkan akses Google.</small>';
+    }
+  }
+}
+
   // Tampilkan loading state
   const submitBtn = document.querySelector('.btn-submit');
   const origBtnText = submitBtn ? submitBtn.textContent : '';
