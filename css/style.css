@@ -1481,4 +1481,22 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 .img-fluid {
   max-width: 100%;
   height: auto;
+
+/* ===== FIX: TURUNKAN KONTEN AGAR TIDAK TERTUTUP ORNAMEN ===== */
+.header-section .header-content {
+  padding-top: 140px !important; /* Tambah jarak dari atas */
+}
+
+.couple-section .container-content,
+.acara-section .container-content,
+.story-section .container-content,
+.venue-section .container-content,
+.rsvp-section .container-content {
+  padding-top: 140px !important; /* Naikkan dari default 80px/100px */
+}
+
+/* Khusus Thank Section yang posisinya berbeda */
+.thank-section .container-content {
+  padding-top: 140px !important;
+}   
 }
