@@ -1,12 +1,19 @@
 /* ========================================
    UNDANGAN DIGITAL - STYLE.CSS
-   Versi Lengkap dengan Perbaikan
+   Versi Lengkap dengan Perbaikan Total
    ======================================== */
 
 /* ===== RESET & BASE ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { overflow-x: hidden; scroll-behavior: smooth; }
-img { max-width: 100%; pointer-events: none; user-select: none; }
+
+/* ✅ FIX: Hanya nonaktifkan interaksi pada ornamen, bukan semua gambar */
+img { max-width: 100%; height: auto; display: block; }
+.ornaments-wrapper img { 
+  pointer-events: none; 
+  user-select: none; 
+}
+
 a { text-decoration: none; color: inherit; }
 button { cursor: pointer; font-family: inherit; }
 
@@ -27,7 +34,6 @@ body {
   max-width: 500px;
   min-height: 100vh;
   position: relative;
-  /* ✅ FIX: Padding-bottom untuk ruang floating menu */
   padding-bottom: 120px;
 }
 
@@ -75,48 +81,19 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 9999;
-  transition: all 1s ease-out;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  contain: content;
+  /* ✅ FIX: Hapus 'contain: content' karena memutus layout di mobile */
 }
 
-/* ✅ FIX: Animasi cover saat dibuka */
+/* ✅ FIX PALING PENTING: Agar cover benar-benar hilang saat diklik */
 .cover-section.cover-opened {
-  pointer-events: none;
-}
-.cover-section.cover-opened .cover-wrapper {
-  transform: scale(1.5);
   opacity: 0;
-  transition: all 0.8s ease-in;
-}
-.cover-section.cover-opened .orn-atas .image-element {
-  transform: translateY(-500%);
-  transition: all 1s ease-in;
-}
-.cover-section.cover-opened .orn-lampu1 .image-element {
-  transform: translateY(-500%);
-  transition: all 1s ease-in;
-}
-.cover-section.cover-opened .orn-lampu2 .image-element {
-  transform: translateY(-500%);
-  transition: all 1s ease-in;
-}
-.cover-section.cover-opened .orn-dauna1 .image-element {
-  transform: translateX(500%);
-  transition: all 1s ease-in;
-}
-.cover-section.cover-opened .orn-dauna2 .image-element {
-  transform: translateX(-500%);
-  transition: all 1s ease-in;
-}
-.cover-section.cover-opened .orn-bawah1 .image-element,
-.cover-section.cover-opened .orn-bawah2 .image-element,
-.cover-section.cover-opened .orn-bawah3 .image-element {
-  transform: translateY(500%);
-  transition: all 1s ease-in;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.8s ease-out, visibility 0.8s;
 }
 
 .cover-wrapper {
@@ -203,7 +180,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   transition: transform 0.3s ease, opacity 0.3s ease;
   z-index: 2010;
 }
-.ornaments-wrapper img { width: 100%; display: block; }
 
 /* ===== COVER ORNAMENTS ===== */
 .cover-section .orn-atas {
@@ -215,9 +191,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   transform-origin: center;
   z-index: 2;
 }
-.cover-section .orn-atas .image-element {
-  transition: all 2s ease-in;
-}
 .cover-section .orn-lampu1 {
   position: absolute;
   top: -60px;
@@ -226,9 +199,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 2;
-}
-.cover-section .orn-lampu1 .image-element {
-  transition: all 2s ease-in;
 }
 .cover-section .orn-lampu2 {
   position: absolute;
@@ -239,9 +209,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   transform-origin: top;
   z-index: 2;
 }
-.cover-section .orn-lampu2 .image-element {
-  transition: all 2s ease-in;
-}
 .cover-section .orn-dauna1 {
   position: absolute;
   top: -2px;
@@ -249,18 +216,12 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   width: 40%;
   z-index: 3;
 }
-.cover-section .orn-dauna1 .image-element {
-  transition: all 2s ease-in;
-}
 .cover-section .orn-dauna2 {
   position: absolute;
   top: -2px;
   left: -2%;
   width: 40%;
   z-index: 3;
-}
-.cover-section .orn-dauna2 .image-element {
-  transition: all 2s ease-in;
 }
 .cover-section .orn-bawah1 {
   position: absolute;
@@ -271,9 +232,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   margin: 0 auto;
   z-index: 3;
 }
-.cover-section .orn-bawah1 .image-element {
-  transition: all 2s ease-in;
-}
 .cover-section .orn-bawah2 {
   position: absolute;
   bottom: -10px;
@@ -283,9 +241,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   margin: 0 auto;
   z-index: 3;
 }
-.cover-section .orn-bawah2 .image-element {
-  transition: all 2s ease-in;
-}
 .cover-section .orn-bawah3 {
   position: absolute;
   bottom: -10px;
@@ -294,9 +249,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   width: 90%;
   margin: 0 auto;
   z-index: 3;
-}
-.cover-section .orn-bawah3 .image-element {
-  transition: all 2s ease-in;
 }
 
 /* ===== HEADER ORNAMENTS ===== */
@@ -364,7 +316,8 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   margin: 0 auto;
   width: 40%;
   z-index: 2;
-  animation: scale 5.5s infinite ease-in-out;
+  /* ✅ FIX: Ganti 'scale' menjadi 'ornScale' agar tidak bentrok */
+  animation: ornScale 5.5s infinite ease-in-out;
   transform-origin: center;
 }
 .couple-section .orn-lampu1 {
@@ -391,7 +344,8 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   right: 0%;
   width: 40%;
   z-index: 1;
-  animation: scale 5.5s infinite ease-in-out;
+  /* ✅ FIX: Ganti 'scale' menjadi 'ornScale' */
+  animation: ornScale 5.5s infinite ease-in-out;
   transform-origin: center;
 }
 .couple-section .orn-dauna2 {
@@ -400,7 +354,8 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   left: 0%;
   width: 40%;
   z-index: 1;
-  animation: scale 5.5s infinite ease-in-out;
+  /* ✅ FIX: Ganti 'scale' menjadi 'ornScale' */
+  animation: ornScale 5.5s infinite ease-in-out;
   transform-origin: center;
 }
 .couple-section .orn-bawah {
@@ -574,7 +529,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   z-index: 3;
 }
 
-/* ===== THANK SECTION ORNAMENTS (BARU - Seperti Gallery) ===== */
+/* ===== THANK SECTION ORNAMENTS ===== */
 .thank-section .ornaments-wrapper {
   top: 0;
   bottom: 0;
@@ -582,7 +537,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   z-index: 1;
 }
 
-/* Lampu kiri & kanan */
 .thank-section .orn-lampu1 {
   position: absolute;
   top: 56px;
@@ -601,8 +555,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   transform-origin: top;
   z-index: 1;
 }
-
-/* Ornamen atas tengah */
 .thank-section .orn-atas {
   position: absolute;
   top: 0px;
@@ -612,8 +564,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   width: 100%;
   z-index: 2;
 }
-
-/* Daun bawah */
 .thank-section .orn-bawah {
   position: absolute;
   bottom: 0px;
@@ -623,8 +573,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   margin: 0 auto;
   z-index: 3;
 }
-
-/* Bunga-bunga animasi di bawah */
 .thank-section .orn-bungab1 {
   position: absolute;
   bottom: -45px;
@@ -679,8 +627,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   animation: smoothSwing2 8s linear infinite;
   transform-origin: center;
 }
-
-/* Daun besar di bawah */
 .thank-section .orn-daunb1 {
   position: absolute;
   bottom: -2.5%;
@@ -977,7 +923,8 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  pointer-events: auto;
+  /* ✅ FIX: Gambar gallery bisa diklik lagi */
+  pointer-events: auto; 
 }
 .gallery-item .caption {
   position: absolute;
@@ -1171,7 +1118,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 .badge-hadir.hadir { background: #d4edda; color: #155724; }
 .badge-hadir.tidak-hadir { background: #f8d7da; color: #721c24; }
 
-/* ===== THANK SECTION (DIPERBAIKI) ===== */
+/* ===== THANK SECTION ===== */
 .thank-section {
   background: linear-gradient(var(--color-primary), var(--color-secondary));
   background-size: cover;
@@ -1180,7 +1127,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   position: relative;
   padding: 3rem 0;
   text-align: center;
-  contain: content;
+  /* ✅ FIX: Hapus 'contain: content' */
 }
 .thank-section .container-content {
   position: relative;
@@ -1217,7 +1164,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   margin: 0 auto;
 }
 
-/* ===== SVG WAVE SHAPE TRANSITIONS (BARU) ===== */
+/* ===== SVG WAVE SHAPE TRANSITIONS ===== */
 .elementor-shape {
   position: relative;
   z-index: 2020;
@@ -1236,8 +1183,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 .elementor-shape-fill {
   fill: var(--color-secondary);
 }
-
-/* Shape fill untuk section putih */
 .elementor-shape.white-fill .elementor-shape-fill {
   fill: #FFFFFF;
 }
@@ -1245,7 +1190,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   fill: var(--color-primary);
 }
 
-/* ===== FOOTER (DIPERBAIKI) ===== */
+/* ===== FOOTER ===== */
 .footer {
   background: linear-gradient(to bottom, var(--color-secondary), #063a31);
   padding: 50px 20px 120px;
@@ -1275,7 +1220,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   50% { transform: scale(1.5); }
 }
 
-/* ===== FLOATING MENU (DIPERBAIKI) ===== */
+/* ===== FLOATING MENU ===== */
 .fix-menu {
   position: fixed;
   bottom: 25px;
@@ -1457,11 +1402,14 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   from { transform: rotate(0deg); }
   to { transform: rotate(-360deg); }
 }
-@keyframes scale {
+
+/* ✅ FIX: Diganti dari 'scale' ke 'ornScale' */
+@keyframes ornScale {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translate(-50%, 20px); }
   to { opacity: 1; transform: translate(-50%, 0); }
