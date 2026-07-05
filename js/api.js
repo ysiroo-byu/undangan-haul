@@ -4,7 +4,7 @@
 
 const API_CONFIG = {
   // ⚠️ GANTI DENGAN URL DEPLOYMENT ANDA
-  baseUrl: 'https://script.google.com/macros/s/XXXXXX_GANTI_INI_XXXXXX/exec',
+  baseUrl: 'https://script.google.com/macros/s/AKfycbzNxYKM45cXgDcVPKHUqbx80I8uWh3XvHEXtCMIe7dv5TD6MwWFX0hL7GaSIQqWq2V-/exec',
 
   // Timeout 8 detik (Google Script bisa lambat)
   timeout: 8000,
