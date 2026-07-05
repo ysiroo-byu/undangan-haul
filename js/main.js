@@ -1,6 +1,6 @@
 // ========================================
 // UNDANGAN DIGITAL - MAIN JAVASCRIPT
-// Versi Google Sheets Backend
+// Versi Google Sheets Backend (FINAL FIX)
 // ========================================
 
 // ===== DATA DEFAULT (FALLBACK SAJA) =====
@@ -526,7 +526,7 @@ function initAudio() {
   }
 }
 
-// ===== COVER / BUKA UNDANGAN (FIX: Loading hanya di sini) =====
+// ===== COVER / BUKA UNDANGAN (FIX FINAL: HAPUS TOTAL DARI DOM) =====
 function initCover() {
   const btnBuka = safeGet('btn-buka-undangan');
   const cover = safeGet('cover');
@@ -534,25 +534,46 @@ function initCover() {
   if (!btnBuka || !cover) return;
 
   btnBuka.addEventListener('click', function() {
+    // 1. Tambahkan class untuk animasi fade out
     cover.classList.add('cover-opened');
+    
+    // 2. HAPUS TOTAL elemen cover setelah animasi selesai (1 detik)
+    setTimeout(function() {
+      if (cover.parentNode) {
+        cover.parentNode.removeChild(cover);
+      }
+    }, 1000);
+
+    // 3. Tampilkan floating menu
     if (fixMenu) fixMenu.style.display = 'flex';
 
-    // HIDE LOADING SCREEN HANYA DI SINI
+    // 4. HAPUS TOTAL loading screen dari DOM
     const loading = safeGet('loading-screen');
     if (loading) {
       loading.classList.add('hidden');
       setTimeout(function() {
         if (loading.parentNode) loading.remove();
-      }, 1000);
+      }, 500); 
     }
 
-    // Init AOS HANYA SEKALI, setelah cover terbuka
+    // 5. Init AOS HANYA SEKALI, setelah cover mulai hilang
     setTimeout(function() {
       if (typeof AOS !== 'undefined' && AOS.init) {
-        AOS.init({ duration: 1000, once: true, offset: 50 });
+        AOS.init({ 
+          duration: 1000, 
+          once: true, 
+          offset: 50 
+        });
+        // Force refresh AOS agar langsung mendeteksi elemen di layar
+        setTimeout(function() {
+          if (typeof AOS !== 'undefined' && AOS.refresh) {
+            AOS.refresh();
+          }
+        }, 100);
       }
-    }, 1000);
+    }, 1200);
 
+    // 6. Jalankan animasi ucapan floating setelah 3 detik
     setTimeout(startAutoAnimasiUcapan, 3000);
   });
 }
@@ -723,14 +744,22 @@ document.addEventListener('DOMContentLoaded', async function() {
       });
     }
 
-    // Safety: hide loading setelah 15 detik jika user tidak klik
+    // Safety: HAPUS loading total jika setelah 15 detik user tidak klik
     setTimeout(function() {
       const loading = safeGet('loading-screen');
+      const cover = safeGet('cover');
       if (loading && !loading.classList.contains('hidden')) {
         loading.classList.add('hidden');
-        setTimeout(function() {
-          if (loading.parentNode) loading.remove();
-        }, 1000);
+        if (loading.parentNode) loading.remove();
+      }
+      if (cover && !cover.classList.contains('cover-opened')) {
+        if (cover.parentNode) cover.parentNode.removeChild(cover);
+        if (typeof AOS !== 'undefined' && AOS.init) {
+          AOS.init({ duration: 1000, once: true, offset: 50 });
+          AOS.refresh();
+        }
+        const fixMenu = safeGet('fix-menu');
+        if (fixMenu) fixMenu.style.display = 'flex';
       }
     }, 15000);
 
